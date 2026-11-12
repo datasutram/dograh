@@ -67,6 +67,7 @@ jobs:
       (github.event_name == 'workflow_dispatch' && (inputs.services == 'both' || inputs.services == 'api')) ||
       (github.event_name == 'push' && needs.changes.outputs.api == 'true')
     runs-on: ubuntu-24.04
+    environment: dograh
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@main
@@ -96,7 +97,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: ${{ secrets.ECR_PUSH_ROLE_ARN }}
+          role-to-assume: ${{ vars.UAT_AWS_BUILD_ROLE_ARN }}
 
       - name: Login to ECR
         uses: aws-actions/amazon-ecr-login@v2
@@ -129,6 +130,7 @@ jobs:
       (github.event_name == 'workflow_dispatch' && (inputs.services == 'both' || inputs.services == 'ui')) ||
       (github.event_name == 'push' && needs.changes.outputs.ui == 'true')
     runs-on: ubuntu-24.04
+    environment: dograh
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@main
@@ -157,7 +159,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: ${{ secrets.ECR_PUSH_ROLE_ARN }}
+          role-to-assume: ${{ vars.UAT_AWS_BUILD_ROLE_ARN }}
 
       - name: Login to ECR
         uses: aws-actions/amazon-ecr-login@v2
