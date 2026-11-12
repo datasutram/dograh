@@ -15,6 +15,8 @@
 services:
   postgres:
     image: pgvector/pgvector:pg17
+    # Set POSTGRES_REPLICAS=0 in .env when DATABASE_URL points at an external Postgres.
+    scale: ${POSTGRES_REPLICAS:-1}
     environment:
       POSTGRES_USER: postgres
       # Sourced from .env. Defaults to "postgres"
@@ -42,6 +44,8 @@ services:
 
   redis:
     image: redis:7
+    # Set REDIS_REPLICAS=0 in .env when REDIS_URL points at an external Redis.
+    scale: ${REDIS_REPLICAS:-1}
     ports:
       - "6379:6379"
     command: >
@@ -166,10 +170,10 @@ services:
       BACKEND_API_ENDPOINT: "${BACKEND_API_ENDPOINT:-}"
 
       # Database configuration (using containerized postgres)
-      DATABASE_URL: "postgresql+asyncpg://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/postgres"
+      DATABASE_URL: "${DATABASE_URL:-postgresql+asyncpg://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/postgres}"
 
       # Redis configuration (using containerized redis)
-      REDIS_URL: "redis://:${REDIS_PASSWORD:-redissecret}@redis:6379"
+      REDIS_URL: "${REDIS_URL:-redis://:${REDIS_PASSWORD:-redissecret}@redis:6379}"
 
       # Storage configuration - bundled MinIO by default. Set ENABLE_AWS_S3=true
       # in .env to make the API use AWS S3 or another S3-compatible server.
@@ -274,8 +278,10 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+        required: false
       redis:
         condition: service_healthy
+        required: false
       minio:
         condition: service_healthy
     healthcheck:
