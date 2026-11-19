@@ -113,7 +113,6 @@ jobs:
           push: true
           tags: |
             ${{ env.ECR_REPO }}:api-${{ steps.meta.outputs.sha }}
-            ${{ env.ECR_REPO }}:api-latest
           cache-from: type=gha,scope=ecr-dograh-api
           cache-to: type=gha,mode=max,scope=ecr-dograh-api
 
@@ -174,7 +173,6 @@ jobs:
           push: true
           tags: |
             ${{ env.ECR_REPO }}:ui-${{ steps.meta.outputs.sha }}
-            ${{ env.ECR_REPO }}:ui-latest
           cache-from: type=gha,scope=ecr-dograh-ui
           cache-to: type=gha,mode=max,scope=ecr-dograh-ui
 
